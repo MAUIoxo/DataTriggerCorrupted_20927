@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
+             xmlns:viewModels="clr-namespace:DataTriggerCorruptedExample.ViewModels"
+             xmlns:databaseModels="clr-namespace:DataTriggerCorruptedExampleDatabase;assembly=DataTriggerCorruptedExampleDatabase"
+             x:DataType="viewModels:TabView1ViewModel"
+             x:Class="DataTriggerCorruptedExample.Pages.Views.BottomSheetContentView">
+
+    <Grid RowDefinitions="Auto, *">
+
+        <SearchBar Grid.Row="0" ios:SearchBar.SearchBarStyle="Minimal" Text="{Binding SearchText}" Placeholder="Search..." Margin="0, 10, 0, 5"/>
+        
+        <CollectionView Grid.Row="1" ItemsSource="{Binding GroupedStoreItems, Mode=OneWay}" VerticalScrollBarVisibility="Always" IsGrouped="True" Margin="0, 0, 0, 50">
+
+            <!-- Group Header Template:  Titles of a Group --> 
+            <CollectionView.GroupHeaderTemplate>
+                <DataTemplate x:DataType="viewModels:GroupedStoreSelectionItemList">
+                    <StackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+                        <Label FontSize="16" FontAttributes="Bold" Text="{Binding GroupName, StringFormat=' {0}'}" TextColor="{StaticResource Tertiary}" Margin="0, 25, 0, 0" />
+                        <BoxView HeightRequest="0.5" Color="{StaticResource Gray200}" HorizontalOptions="FillAndExpand" Margin="0, 5, 0, 5" />
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.GroupHeaderTemplate>
+
+            <!-- Item Template:  Selected Store Item --> 
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="{x:Type databaseModels:StoreSelection}">
+                    <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto" Padding="{OnPlatform Default='5, 0, 5, 0', iOS='5, 0, 5, 15'}">
+                        <Label Grid.Row="0" Grid.Column="0" Text="{Binding StoreItem.Name}" VerticalOptions="Center" />
+                        <Switch Grid.Row="0" Grid.Column="1" IsEnabled="True" IsToggled="{Binding IsSelected, Mode=TwoWay}" ThumbColor="{StaticResource Gray100}" OnColor="{StaticResource Tertiary}" VerticalOptions="Center" HorizontalOptions="Center" Margin="{OnPlatform Android='0, -5, 0, -5'}"/>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            
+        </CollectionView>
+
+    </Grid>
+
+</ContentView>

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:tabs="http://sharpnado.com"
+             xmlns:controls="clr-namespace:XGENO.Maui.Controls;assembly=Maui.Controls.BottomSheet"
+             xmlns:views="clr-namespace:DataTriggerCorruptedExample.Pages.Views"
+             xmlns:viewModels="clr-namespace:DataTriggerCorruptedExample.ViewModels"             
+             x:DataType="viewModels:MainPageViewModel"
+             x:Class="DataTriggerCorruptedExample.Pages.MainPage"
+             Title="DataBindingCorruptedExample">
+
+
+    <!-- Style for BottomTabs -->
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="BottomTab" TargetType="tabs:BottomTabItem">
+                <Setter Property="SelectedTabColor" Value="{StaticResource Tertiary}" />
+                <Setter Property="FontFamily" Value="OpenSansExtraBold" />
+                <Setter Property="UnselectedLabelColor" Value="{StaticResource Black}" />
+                <Setter Property="UnselectedIconColor" Value="{StaticResource Black}" />
+                <Setter Property="IconSize" Value="24" />
+                <Setter Property="LabelSize" Value="14" />
+            </Style>
+            <Style x:Key="BottomSheetHeaderStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="{StaticResource Tertiary}" />
+                <Setter Property="FontSize" Value="16" />
+            </Style>
+        </ResourceDictionary>
+        <viewModels:TabView1ViewModel x:Key="TabView1ViewModel" />
+    </ContentPage.Resources>
+
+
+    <Grid>
+        <Grid x:Name="MainPageViewGrid" RowDefinitions="*, 55">
+
+            <!-- Switcher to switch between the different Views -->
+            <tabs:ViewSwitcher x:Name="ContentViewSwitcher"
+                               Grid.Row="0"
+                               Animate="True"
+                               SelectedIndex="{Binding SelectedViewModelIndex, Mode=TwoWay}">
+
+                <tabs:DelayedView x:TypeArguments="views:TabView1"
+                                  BindingContext="{Binding Source={StaticResource TabView1ViewModel}}"
+                                  AccentColor="{StaticResource Gray100}"
+                                  Animate="True"                              
+                                  UseActivityIndicator="True" />
+
+                <tabs:DelayedView x:TypeArguments="views:TabView2"
+                                  BindingContext="{Binding Source={viewModels:TabView2ViewModel}}"
+                                  AccentColor="{StaticResource Gray100}"
+                                  Animate="True"
+                                  UseActivityIndicator="True" />
+
+            </tabs:ViewSwitcher>
+                
+
+            <!-- Tabs at the Bottom -->
+            <tabs:TabHostView Grid.Row="1"
+                              BackgroundColor="White"
+                              Orientation="Horizontal"
+                              TabType="Fixed"
+                              SelectedIndex="{Binding Source={x:Reference ContentViewSwitcher}, Path=SelectedIndex, Mode=TwoWay}">
+
+                <tabs:TabHostView.Tabs>
+                    
+                    <!-- Tab 1 -->
+                    <tabs:BottomTabItem Style="{StaticResource BottomTab}"
+                                        Label="Tab1"
+                                        Margin="5, 0, 0, 0"/>
+
+                    <tabs:TabButton x:Name="DotnetBotCircleButton"
+                                    BackgroundColor="Transparent"
+                                    ButtonCircleSize="110"
+                                    IconImageSource="dotnet_bot.png"
+                                    TapCommand="{Binding Source={StaticResource TabView1ViewModel}, Path=DisplayBottomSheetCommand}"
+                                    TranslationY="-15" />
+
+                    <!-- Tab 2 -->
+                    <tabs:BottomTabItem Style="{StaticResource BottomTab}"
+                                        Label="Tab2" />
+
+                </tabs:TabHostView.Tabs>
+            </tabs:TabHostView>
+        </Grid>
+
+
+        <controls:BottomSheet x:Name="BottomSheet"                              
+                              HeaderText="Stores"
+                              HeaderStyle="{StaticResource BottomSheetHeaderStyle}"
+                              BindingContext="{Binding Source={StaticResource TabView1ViewModel}}"
+                              InputTransparent="True">
+
+            <!-- Content of the BottomSheet defined in a separate View:  BottomSheetContentView -->
+            <controls:BottomSheet.BottomSheetContent>
+                <views:BottomSheetContentView />
+            </controls:BottomSheet.BottomSheetContent>
+
+        </controls:BottomSheet>
+        
+    </Grid>
+    
+
+</ContentPage>
